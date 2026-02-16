@@ -68,6 +68,30 @@ The following table outlines the props available for the `StrokeText` component:
 | `numberOfLines` | number  | Number of lines (default: `0`)                                  |
 | `ellipsis`      | boolean | Ellipsis (...) (default: `false`)                               |
 | `width`         | number  | Text width to enable ellipsis (default: `undefined`)            |
+| `shadowColor`   | string  | Color of the text shadow (default: `undefined` — no shadow)     |
+| `shadowOffsetX` | number  | Horizontal shadow offset (default: `0`)                         |
+| `shadowOffsetY` | number  | Vertical shadow offset (default: `0`)                           |
+| `shadowRadius`  | number  | Shadow blur radius (default: `0`)                               |
+
+## Shadow
+
+```jsx
+<StrokeText
+  text="Shadow Text"
+  fontSize={32}
+  color="#FFFFFF"
+  strokeColor="#000000"
+  strokeWidth={2}
+  shadowColor="#000000"
+  shadowOffsetX={2}
+  shadowOffsetY={2}
+  shadowRadius={4}
+  fontFamily="Nunito-Black"
+  align="center"
+/>
+```
+
+The shadow is applied to the filled text only (not the stroke), so it follows the text shape naturally without doubling.
 
 ## Ellipsis
 

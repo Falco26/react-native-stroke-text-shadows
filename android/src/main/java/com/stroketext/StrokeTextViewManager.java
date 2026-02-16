@@ -68,4 +68,24 @@ public class StrokeTextViewManager extends SimpleViewManager<View> {
     public void setWidth(StrokeTextView view, float width) {
         view.setCustomWidth(width);
     }
+
+    @ReactProp(name = "shadowColor")
+    public void setShadowColor(StrokeTextView view, String shadowColor) {
+        view.setShadowColor(shadowColor);
+    }
+
+    @ReactProp(name = "shadowOffsetX", defaultFloat = 0f)
+    public void setShadowOffsetX(StrokeTextView view, float shadowOffsetX) {
+        view.setShadowOffsetX(shadowOffsetX);
+    }
+
+    @ReactProp(name = "shadowOffsetY", defaultFloat = 0f)
+    public void setShadowOffsetY(StrokeTextView view, float shadowOffsetY) {
+        view.setShadowOffsetY(shadowOffsetY);
+    }
+
+    @ReactProp(name = "shadowRadius", defaultFloat = 0f)
+    public void setShadowRadius(StrokeTextView view, float shadowRadius) {
+        view.setShadowRadius(shadowRadius);
+    }
 }
