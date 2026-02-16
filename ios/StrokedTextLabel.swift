@@ -21,6 +21,10 @@ class StrokedTextLabel: UILabel {
     var align: NSTextAlignment = .center
     var customWidth: CGFloat = 0
     var ellipsis: Bool = false
+    var shadowLayerColor: UIColor? = nil
+    var shadowLayerOffsetX: CGFloat = 0
+    var shadowLayerOffsetY: CGFloat = 0
+    var shadowLayerRadius: CGFloat = 0
 
 
     override func drawText(in rect: CGRect) {
@@ -43,20 +47,33 @@ class StrokedTextLabel: UILabel {
         context?.setTextDrawingMode(.fill)
         self.textColor = textColor
         self.shadowOffset = CGSize(width: 0, height: 0)
+
+        if let shadowColor = shadowLayerColor {
+            context?.setShadow(offset: CGSize(width: shadowLayerOffsetX, height: shadowLayerOffsetY), blur: shadowLayerRadius, color: shadowColor.cgColor)
+        }
+
         super.drawText(in: adjustedRect)
+
+        if shadowLayerColor != nil {
+            context?.setShadow(offset: .zero, blur: 0, color: nil)
+        }
 
         self.shadowOffset = shadowOffset
     }
 
     override var intrinsicContentSize: CGSize {
         var contentSize = super.intrinsicContentSize
+
+        let shadowExtraWidth = shadowLayerColor != nil ? abs(shadowLayerOffsetX) + shadowLayerRadius : 0
+        let shadowExtraHeight = shadowLayerColor != nil ? abs(shadowLayerOffsetY) + shadowLayerRadius : 0
+
         if customWidth > 0 {
             contentSize.width = customWidth
         } else {
-            contentSize.width += outlineWidth
+            contentSize.width += outlineWidth + shadowExtraWidth
         }
 
-        contentSize.height += outlineWidth
+        contentSize.height += outlineWidth + shadowExtraHeight
         return contentSize
     }
 }

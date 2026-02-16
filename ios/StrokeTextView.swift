@@ -142,6 +142,42 @@ class StrokeTextView: RCTView {
         }
     }
 
+    @objc var shadowColor: String = "" {
+        didSet {
+            if shadowColor != oldValue {
+                label.shadowLayerColor = shadowColor.isEmpty ? nil : colorStringToUIColor(colorString: shadowColor)
+                label.setNeedsDisplay()
+            }
+        }
+    }
+
+    @objc var shadowOffsetX: NSNumber = 0 {
+        didSet {
+            if shadowOffsetX != oldValue {
+                label.shadowLayerOffsetX = CGFloat(truncating: shadowOffsetX)
+                label.setNeedsDisplay()
+            }
+        }
+    }
+
+    @objc var shadowOffsetY: NSNumber = 0 {
+        didSet {
+            if shadowOffsetY != oldValue {
+                label.shadowLayerOffsetY = CGFloat(truncating: shadowOffsetY)
+                label.setNeedsDisplay()
+            }
+        }
+    }
+
+    @objc var shadowRadius: NSNumber = 0 {
+        didSet {
+            if shadowRadius != oldValue {
+                label.shadowLayerRadius = CGFloat(truncating: shadowRadius)
+                label.setNeedsDisplay()
+            }
+        }
+    }
+
     private func colorStringToUIColor(colorString: String) -> UIColor {
         var string = colorString.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
 

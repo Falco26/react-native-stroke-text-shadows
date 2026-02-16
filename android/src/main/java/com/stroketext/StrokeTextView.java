@@ -34,12 +34,18 @@ class StrokeTextView extends View {
     private StaticLayout strokeLayout;
     private boolean layoutDirty = true;
     private float customWidth = 0;
+    private int shadowColor = 0;
+    private float shadowOffsetX = 0;
+    private float shadowOffsetY = 0;
+    private float shadowRadius = 0;
+    private boolean hasShadow = false;
     private final Map<String, Typeface> fontCache = new HashMap<>();
 
     public StrokeTextView(ThemedReactContext context) {
         super(context);
         textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         strokePaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+        setLayerType(LAYER_TYPE_SOFTWARE, null);
     }
 
     private void ensureLayout() {
@@ -48,6 +54,12 @@ class StrokeTextView extends View {
             textPaint.setTypeface(typeface);
             textPaint.setTextSize(fontSize);
             textPaint.setColor(textColor);
+            if (hasShadow) {
+                textPaint.setShadowLayer(shadowRadius, shadowOffsetX, shadowOffsetY, shadowColor);
+            } else {
+                textPaint.clearShadowLayer();
+            }
+            strokePaint.clearShadowLayer();
             strokePaint.setStyle(Paint.Style.STROKE);
             strokePaint.setStrokeJoin(Paint.Join.ROUND);
             strokePaint.setStrokeCap(Paint.Cap.ROUND);
@@ -210,6 +222,43 @@ class StrokeTextView extends View {
     public void setCustomWidth(float width) {
         if (!(this.customWidth == width)) {
             this.customWidth = width;
+            layoutDirty = true;
+            invalidate();
+        }
+    }
+
+    public void setShadowColor(String color) {
+        int parsedColor = parseColor(color);
+        if (this.shadowColor != parsedColor) {
+            this.shadowColor = parsedColor;
+            this.hasShadow = true;
+            layoutDirty = true;
+            invalidate();
+        }
+    }
+
+    public void setShadowOffsetX(float offsetX) {
+        float scaled = getScaledSize(offsetX);
+        if (this.shadowOffsetX != scaled) {
+            this.shadowOffsetX = scaled;
+            layoutDirty = true;
+            invalidate();
+        }
+    }
+
+    public void setShadowOffsetY(float offsetY) {
+        float scaled = getScaledSize(offsetY);
+        if (this.shadowOffsetY != scaled) {
+            this.shadowOffsetY = scaled;
+            layoutDirty = true;
+            invalidate();
+        }
+    }
+
+    public void setShadowRadius(float radius) {
+        float scaled = getScaledSize(radius);
+        if (this.shadowRadius != scaled) {
+            this.shadowRadius = scaled;
             layoutDirty = true;
             invalidate();
         }
