@@ -16,5 +16,6 @@ RCT_EXPORT_VIEW_PROPERTY(shadowColor, NSString)
 RCT_EXPORT_VIEW_PROPERTY(shadowOffsetX, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(shadowOffsetY, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(shadowRadius, NSNumber)
+RCT_EXPORT_VIEW_PROPERTY(shadowOpacity, NSNumber)
 
 @end

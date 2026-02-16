@@ -178,6 +178,15 @@ class StrokeTextView: RCTView {
         }
     }
 
+    @objc var shadowOpacity: NSNumber = 1 {
+        didSet {
+            if shadowOpacity != oldValue {
+                label.shadowLayerOpacity = CGFloat(truncating: shadowOpacity)
+                label.setNeedsDisplay()
+            }
+        }
+    }
+
     private func colorStringToUIColor(colorString: String) -> UIColor {
         var string = colorString.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
 

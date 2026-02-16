@@ -20,6 +20,7 @@ export interface StrokeTextProps {
   shadowOffsetX?: number;
   shadowOffsetY?: number;
   shadowRadius?: number;
+  shadowOpacity?: number;
 }
 
 const NativeStrokeText = requireNativeComponent<StrokeTextProps>(ComponentName);

@@ -88,4 +88,9 @@ public class StrokeTextViewManager extends SimpleViewManager<View> {
     public void setShadowRadius(StrokeTextView view, float shadowRadius) {
         view.setShadowRadius(shadowRadius);
     }
+
+    @ReactProp(name = "shadowOpacity", defaultFloat = 1f)
+    public void setShadowOpacity(StrokeTextView view, float shadowOpacity) {
+        view.setShadowOpacity(shadowOpacity);
+    }
 }

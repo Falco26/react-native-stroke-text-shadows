@@ -25,6 +25,7 @@ class StrokedTextLabel: UILabel {
     var shadowLayerOffsetX: CGFloat = 0
     var shadowLayerOffsetY: CGFloat = 0
     var shadowLayerRadius: CGFloat = 0
+    var shadowLayerOpacity: CGFloat = 1.0
 
 
     override func drawText(in rect: CGRect) {
@@ -49,7 +50,8 @@ class StrokedTextLabel: UILabel {
         self.shadowOffset = CGSize(width: 0, height: 0)
 
         if let shadowColor = shadowLayerColor {
-            context?.setShadow(offset: CGSize(width: shadowLayerOffsetX, height: shadowLayerOffsetY), blur: shadowLayerRadius, color: shadowColor.cgColor)
+            let adjustedColor = shadowColor.withAlphaComponent(shadowLayerOpacity)
+            context?.setShadow(offset: CGSize(width: shadowLayerOffsetX, height: shadowLayerOffsetY), blur: shadowLayerRadius, color: adjustedColor.cgColor)
         }
 
         super.drawText(in: adjustedRect)

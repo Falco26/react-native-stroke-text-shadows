@@ -38,6 +38,7 @@ class StrokeTextView extends View {
     private float shadowOffsetX = 0;
     private float shadowOffsetY = 0;
     private float shadowRadius = 0;
+    private float shadowOpacity = 1.0f;
     private boolean hasShadow = false;
     private final Map<String, Typeface> fontCache = new HashMap<>();
 
@@ -55,7 +56,9 @@ class StrokeTextView extends View {
             textPaint.setTextSize(fontSize);
             textPaint.setColor(textColor);
             if (hasShadow) {
-                textPaint.setShadowLayer(shadowRadius, shadowOffsetX, shadowOffsetY, shadowColor);
+                int alpha = (int) (((shadowColor >>> 24) & 0xFF) * shadowOpacity);
+                int adjustedShadowColor = (shadowColor & 0x00FFFFFF) | (alpha << 24);
+                textPaint.setShadowLayer(shadowRadius, shadowOffsetX, shadowOffsetY, adjustedShadowColor);
             } else {
                 textPaint.clearShadowLayer();
             }
@@ -259,6 +262,15 @@ class StrokeTextView extends View {
         float scaled = getScaledSize(radius);
         if (this.shadowRadius != scaled) {
             this.shadowRadius = scaled;
+            layoutDirty = true;
+            invalidate();
+        }
+    }
+
+    public void setShadowOpacity(float opacity) {
+        float clamped = Math.max(0f, Math.min(1f, opacity));
+        if (this.shadowOpacity != clamped) {
+            this.shadowOpacity = clamped;
             layoutDirty = true;
             invalidate();
         }

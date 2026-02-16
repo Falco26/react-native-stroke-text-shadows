@@ -72,6 +72,7 @@ The following table outlines the props available for the `StrokeText` component:
 | `shadowOffsetX` | number  | Horizontal shadow offset (default: `0`)                         |
 | `shadowOffsetY` | number  | Vertical shadow offset (default: `0`)                           |
 | `shadowRadius`  | number  | Shadow blur radius (default: `0`)                               |
+| `shadowOpacity` | number  | Shadow opacity, from `0` to `1` (default: `1`)                  |
 
 ## Shadow
 
