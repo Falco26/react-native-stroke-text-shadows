@@ -1,5 +1,6 @@
 package com.stroketext;
 
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -29,9 +30,11 @@ class StrokeTextView extends View {
     private boolean ellipsis = false;
     private final TextPaint textPaint;
     private final TextPaint strokePaint;
+    private TextPaint shadowPaint;
     private Layout.Alignment alignment = Layout.Alignment.ALIGN_CENTER;
     private StaticLayout textLayout;
     private StaticLayout strokeLayout;
+    private StaticLayout shadowLayout;
     private boolean layoutDirty = true;
     private float customWidth = 0;
     private int shadowColor = 0;
@@ -54,14 +57,7 @@ class StrokeTextView extends View {
             textPaint.setTypeface(typeface);
             textPaint.setTextSize(fontSize);
             textPaint.setColor(textColor);
-            if (hasShadow) {
-                int alpha = (int) (((shadowColor >>> 24) & 0xFF) * shadowOpacity);
-                int adjustedShadowColor = (shadowColor & 0x00FFFFFF) | (alpha << 24);
-                textPaint.setShadowLayer(shadowRadius, shadowOffsetX, shadowOffsetY, adjustedShadowColor);
-            } else {
-                textPaint.clearShadowLayer();
-            }
-            strokePaint.clearShadowLayer();
+            textPaint.clearShadowLayer();
             strokePaint.setStyle(Paint.Style.STROKE);
             strokePaint.setStrokeJoin(Paint.Join.ROUND);
             strokePaint.setStrokeCap(Paint.Cap.ROUND);
@@ -79,6 +75,21 @@ class StrokeTextView extends View {
                 textLayout = new StaticLayout(ellipsizedText, textPaint, width, alignment, 1.0f, 0.0f, false);
             }
             strokeLayout = new StaticLayout(ellipsizedText, strokePaint, width, alignment, 1.0f, 0.0f, false);
+
+            if (hasShadow) {
+                shadowPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+                shadowPaint.setTypeface(typeface);
+                shadowPaint.setTextSize(fontSize);
+                int alpha = (int) (((shadowColor >>> 24) & 0xFF) * shadowOpacity);
+                int adjustedColor = (shadowColor & 0x00FFFFFF) | (alpha << 24);
+                shadowPaint.setColor(adjustedColor);
+                if (shadowRadius > 0) {
+                    shadowPaint.setMaskFilter(new BlurMaskFilter(shadowRadius, BlurMaskFilter.Blur.NORMAL));
+                }
+                shadowLayout = new StaticLayout(ellipsizedText, shadowPaint, width, alignment, 1.0f, 0.0f, false);
+            } else {
+                shadowLayout = null;
+            }
 
             layoutDirty = false;
         }
@@ -113,25 +124,31 @@ class StrokeTextView extends View {
         super.onDraw(canvas);
         ensureLayout();
 
-        float translateX = 0;
-        float translateY = 0;
+        float padLeft = 0;
+        float padTop = 0;
+        int extraWidth = 0;
+        int extraHeight = 0;
+
         if (hasShadow) {
-            translateX = Math.max(0, shadowRadius - shadowOffsetX);
-            translateY = Math.max(0, shadowRadius - shadowOffsetY);
+            padLeft = Math.max(0, shadowRadius - shadowOffsetX);
+            padTop = Math.max(0, shadowRadius - shadowOffsetY);
+            extraWidth = (int) Math.ceil(Math.abs(shadowOffsetX) + shadowRadius);
+            extraHeight = (int) Math.ceil(Math.abs(shadowOffsetY) + shadowRadius);
+        }
+
+        if (hasShadow && shadowLayout != null) {
+            canvas.save();
+            canvas.translate(padLeft + shadowOffsetX, padTop + shadowOffsetY);
+            shadowLayout.draw(canvas);
+            canvas.restore();
         }
 
         canvas.save();
-        canvas.translate(translateX, translateY);
+        canvas.translate(padLeft, padTop);
         strokeLayout.draw(canvas);
         textLayout.draw(canvas);
         canvas.restore();
 
-        int extraWidth = 0;
-        int extraHeight = 0;
-        if (hasShadow) {
-            extraWidth = (int) Math.ceil(Math.abs(shadowOffsetX) + shadowRadius);
-            extraHeight = (int) Math.ceil(Math.abs(shadowOffsetY) + shadowRadius);
-        }
         updateSize(textLayout.getWidth() + extraWidth, textLayout.getHeight() + extraHeight);
     }
 
