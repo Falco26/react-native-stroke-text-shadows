@@ -46,7 +46,6 @@ class StrokeTextView extends View {
         super(context);
         textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         strokePaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        setLayerType(LAYER_TYPE_SOFTWARE, null);
     }
 
     private void ensureLayout() {
@@ -113,9 +112,27 @@ class StrokeTextView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         ensureLayout();
+
+        float translateX = 0;
+        float translateY = 0;
+        if (hasShadow) {
+            translateX = Math.max(0, shadowRadius - shadowOffsetX);
+            translateY = Math.max(0, shadowRadius - shadowOffsetY);
+        }
+
+        canvas.save();
+        canvas.translate(translateX, translateY);
         strokeLayout.draw(canvas);
         textLayout.draw(canvas);
-        updateSize(textLayout.getWidth(), textLayout.getHeight());
+        canvas.restore();
+
+        int extraWidth = 0;
+        int extraHeight = 0;
+        if (hasShadow) {
+            extraWidth = (int) Math.ceil(Math.abs(shadowOffsetX) + shadowRadius);
+            extraHeight = (int) Math.ceil(Math.abs(shadowOffsetY) + shadowRadius);
+        }
+        updateSize(textLayout.getWidth() + extraWidth, textLayout.getHeight() + extraHeight);
     }
 
     private float getScaledSize(float size) {
@@ -235,6 +252,7 @@ class StrokeTextView extends View {
         if (this.shadowColor != parsedColor) {
             this.shadowColor = parsedColor;
             this.hasShadow = true;
+            setLayerType(LAYER_TYPE_SOFTWARE, null);
             layoutDirty = true;
             invalidate();
         }
